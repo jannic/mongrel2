@@ -6,13 +6,20 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <mem/halloc.h>
+#include <endian.h>
 #include "adt/radixmap.h"
 #include "dbg.h"
 
 // undefine this to run the more correct but slower sort
 #define FAST_OPS
 
+#if __BYTE_ORDER == __LITTLE_ENDIAN
 #define ByteOf(x,y) (((uint8_t *)x)[(y)])
+#elif __BYTE_ORDER == __BIG_ENDIAN
+#define ByteOf(x,y) (((uint8_t *)x)[3-(y)])
+#else
+#error unknown byte order
+#endif
 
 static inline void radix_sort(short offset, uint64_t N, uint64_t *source, uint64_t *dest)
 {
